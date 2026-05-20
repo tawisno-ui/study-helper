@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Study Helper 📚</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fraunces:ital,wght@0,700;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ── HEADER ────────────────────────────────────────────────────────────── -->
+    <header>
+      <div class="logo-icon">📚</div>
+      <span class="logo-text">Tan's <span>Study</span> Helper</span>
+      <div class="home_about_contact">
+        <nav class="header_navs">
+          <a href="#">HOME</a>
+          <a href="#">ABOUT</a>
+          <a href="https://www.facebook.com/tatan217" target="_blank"
+            >CONTACT</a
+          >
+        </nav>
+      </div>
+      <span>
+        <a
+          class="header-badge"
+          href="https://www.facebook.com/tatan217"
+          target="_blank"
+        ></a>
+      </span>
+    </header>
+
+    <!-- ── VISITOR COUNTER BAR ──────────────────────────────────────────────── -->
+    <div class="visitor-bar">
+      <span class="visitor-dot"></span>
+      <span class="visitor-label">👥 Total Visitors:</span>
+      <span class="visitor-count" id="visitorCount">…</span>
+    </div>
+
+    <!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+    <section class="hero">
+      <span class="hero-emoji">🧠</span>
+      <h1>Study smarter, not <em>harder</em></h1>
+      <p>
+        Enter any topic and your grade level — get a quiz, flashcards, and a
+        quick reviewer instantly.
+      </p>
+    </section>
+
+    <!-- ── FORM ──────────────────────────────────────────────────────────────── -->
+    <div class="form-wrap">
+      <div class="card">
+        <div class="form-grid">
+          <div class="field" style="grid-column: 1 / -1">
+            <label for="topic">📖 Topic</label>
+            <input
+              type="text"
+              id="topic"
+              placeholder="e.g. Photosynthesis, World War II, Fractions…"
+              maxlength="200"
+              autocomplete="off"
+            />
+          </div>
+          <div class="field">
+            <label for="grade">🎓 Grade Level</label>
+            <select id="grade">
+              <option value="">Select grade…</option>
+              <option value="1">Grade 1</option>
+              <option value="2">Grade 2</option>
+              <option value="3">Grade 3</option>
+              <option value="4">Grade 4</option>
+              <option value="5">Grade 5</option>
+              <option value="6">Grade 6</option>
+              <option value="7">Grade 7</option>
+              <option value="8">Grade 8</option>
+              <option value="9">Grade 9</option>
+              <option value="10">Grade 10</option>
+              <option value="11">Grade 11</option>
+              <option value="12">Grade 12</option>
+            </select>
+          </div>
+          <button class="btn-generate" id="generateBtn" onclick="generate()">
+            <span id="btnIcon">✨</span>
+            <span id="btnText">Generate Study Material</span>
+          </button>
+        </div>
+
+        <div class="error-banner" id="errorBanner">
+          <span class="err-icon">⚠️</span>
+          <span id="errorMsg">Something went wrong.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LOADER ─────────────────────────────────────────────────────────────── -->
+    <div class="loader-wrap" id="loader">
+      <div class="spinner"></div>
+      <p class="loader-text">Generating your study material…</p>
+      <div class="loader-steps">
+        <span class="loader-step active" id="step1">📝 Building summary</span>
+        <span class="loader-step" id="step2">🃏 Creating flashcards</span>
+        <span class="loader-step" id="step3">❓ Writing quiz</span>
+      </div>
+    </div>
+
+    <!-- ── RESULTS ────────────────────────────────────────────────────────────── -->
+    <div id="results">
+      <!-- Summary -->
+      <div class="card" id="summarySection">
+        <div class="section-header">
+          <div
+            class="section-icon"
+            style="background: var(--primary-l); color: var(--primary)"
+          >
+            📝
+          </div>
+          <div>
+            <h2>Quick Reviewer</h2>
+            <div class="sub">Short summary to get you started</div>
+          </div>
+        </div>
+        <div id="topicBadge" class="topic-badge">📖 Topic</div>
+        <p class="summary-text" id="summaryText"></p>
+      </div>
+
+      <!-- Flashcards -->
+      <div class="card" id="flashcardsSection">
+        <div class="section-header">
+          <div
+            class="section-icon"
+            style="background: var(--teal-l); color: var(--teal)"
+          >
+            🃏
+          </div>
+          <div>
+            <h2>Flashcards</h2>
+            <div class="sub">Tap a card to flip it and see the definition</div>
+          </div>
+        </div>
+
+        <!-- Mobile single card -->
+        <div id="fcSingle" class="hidden">
+          <div style="display: flex; justify-content: center">
+            <div
+              class="flashcard"
+              id="fcCard"
+              style="width: 100%; max-width: 360px"
+              onclick="flipCard()"
+            >
+              <div class="flashcard-inner">
+                <div class="flashcard-front">
+                  <div class="card-label">Term</div>
+                  <div class="term" id="fcTerm">—</div>
+                  <div class="flip-hint">tap to flip ↩</div>
+                </div>
+                <div class="flashcard-back" id="fcDef">—</div>
+              </div>
+            </div>
+          </div>
+          <div class="fc-nav">
+            <button onclick="fcNav(-1)" id="fcPrev">← Prev</button>
+            <span class="fc-counter"
+              ><span id="fcCurrent">1</span> / <span id="fcTotal">6</span></span
+            >
+            <button onclick="fcNav(1)" id="fcNext">Next →</button>
+          </div>
+        </div>
+
+        <!-- Desktop grid -->
+        <div class="flashcards-grid" id="fcGrid"></div>
+
+        <!-- Load More Flashcards -->
+        <div class="more-btn-wrap">
+          <button
+            class="btn-more"
+            id="moreFcBtn"
+            onclick="loadMore('flashcards')"
+          >
+            ➕ Load More Flashcards
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="card" id="quizSection">
+        <div class="section-header">
+          <div
+            class="section-icon"
+            style="background: var(--violet-l); color: var(--violet)"
+          >
+            ❓
+          </div>
+          <div>
+            <h2>Quiz Time!</h2>
+            <div class="sub">
+              10 questions — 7 multiple choice + 3 identification
+            </div>
+          </div>
+        </div>
+        <div class="quiz-list" id="quizList"></div>
+
+        <!-- Load More Quiz -->
+        <div class="more-btn-wrap">
+          <button class="btn-more" id="moreQuizBtn" onclick="loadMore('quiz')">
+            ➕ Load More Questions
+          </button>
+        </div>
+
+        <div class="quiz-score-wrap hidden" id="scoreCard">
+          <div class="score-label">Your Score</div>
+          <div class="score-num" id="scoreNum">0/10</div>
+          <div class="score-msg" id="scoreMsg">Well done!</div>
+        </div>
+      </div>
+
+      <!-- Restart -->
+      <button class="btn-restart" onclick="restart()">
+        🔄 Study Another Topic
+      </button>
+    </div>
+
+    <!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+    <footer>
+      © 2026
+      <a href="https://www.facebok.com/tatan217" target="_blank"
+        >Christian Aguilar</a
+      >
+      +
+      <a href="https://workers.cloudflare.com/" target="_blank">Cloudflare</a>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+      /* ── VISITOR COUNTER ─────────────────────────────────────────────────
+         Uses counterapi.dev — free, no signup, works on all browsers/devices.
+         Namespace: tans-study-helper  Key: visitors
+         Each page load increments the counter by 1.
+      ──────────────────────────────────────────────────────────────────── */
+      (async function () {
+        const el = document.getElementById("visitorCount");
+        // Unique namespace + key for your site — change if you want your own
+        const NAMESPACE = "tans-study-helper-2026";
+        const KEY       = "visitors";
+        const HIT_URL   = `https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}/up`;
+        const GET_URL   = `https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}`;
+
+        try {
+          // Increment on every real page load, but not on tab-switch / back-forward
+          // by checking sessionStorage so each browser SESSION only counts once
+          const SESSION_KEY = "tan_visited";
+          let data;
+
+          if (!sessionStorage.getItem(SESSION_KEY)) {
+            // First visit this session — increment
+            const res = await fetch(HIT_URL);
+            data = await res.json();
+            sessionStorage.setItem(SESSION_KEY, "1");
+          } else {
+            // Already counted this session — just read
+            const res = await fetch(GET_URL);
+            data = await res.json();
+          }
+
+          const count = data?.count ?? data?.value ?? "—";
+          el.textContent = Number(count).toLocaleString();
+        } catch {
+          el.textContent = "—";
+        }
+      })();
+    </script>
+  </body>
+</html>
